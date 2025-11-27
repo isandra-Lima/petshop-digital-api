@@ -1,8 +1,10 @@
-class Tutor:
-    def __init__(self, id: int, nome: str, telefone: str):
-        self.id = id
-        self.nome = nome
-        self.telefone = telefone
+from sqlalchemy import Column, Interger, String
+from app.database import Base
 
-    def __repr__(self):
-        return f"Tutor(id={self.id}, nome='{self.nome}')"
+
+class Tutor(Base):
+    __tablename__ = "tutores"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String, nullable=False)
+    telefone = Column(String, nullable=False)

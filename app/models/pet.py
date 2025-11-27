@@ -1,12 +1,13 @@
-from tutor import Tutor
+from sqlalchemy import Column, Interger, String, ForeignKey
+from app.database import Base
 
-class Pet:
-    def __init__(self, id: int, nome: str, especie: str, idade: int, tutor: Tutor):
-        self.id = id
-        self.nome = nome
-        self.especie = especie
-        self.idade = idade
-        self.tutor = tutor
 
-    def __repr__(self):
-        return f"Pet(id={self.id}, nome='{self.nome}', tutor='{self.tutor.nome}')"
+class Pet(Base):
+    __tablename__ = "pets"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    nome = Column(String, nullable=False)
+    especie = Column(String, nullable=False)
+    idade = Column(String, nullable=False)
+    
+    tutor_id = Column(Integer, ForeignKey("tutores.id"), nullable=False)

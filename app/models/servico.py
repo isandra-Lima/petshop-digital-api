@@ -1,8 +1,11 @@
-class Servico:
-    def __init__(self, id: int, nome : str, preco: float):
-        self.id = id
-        self.nome = nome
-        self.preco = preco
-        
-    def __repr__(self):
-        return f"Servico(id={self.id}, nome='{self.nome}, preco={self.preco})"
+from sqlalchemy import Column, Interger, String, Float
+from app.database import Base
+
+
+class Servico(Base):
+    __tablename__ = "servicos"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    tipo = Column(String, nullable=False)
+    preco = Column(Float, nullable=False)
+    
