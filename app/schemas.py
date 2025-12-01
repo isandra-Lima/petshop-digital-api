@@ -1,57 +1,57 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 
-class DonoBase(BaseModel):
+class TutorCreate(BaseModel):
     nome: str
     telefone: str
 
-class DonoCreate(DonoBase):
-    pass 
-
-# 2. Pet
-class PetBase(BaseModel):
+class Tutor(BaseModel):
+    id: int
     nome: str
-    tipo: str  
-    porte: str 
-    dono_id: int 
+    telefone: str
 
-class PetCreate(PetBase):
-    pass 
+    class Config:
+        orm_mode = True
 
 
-class HistoricoServicoBase(BaseModel):
-  
-    preco_final: float
-    data_aplicacao: Optional[datetime] = None
+class PetCreate(BaseModel):
+    nome: str
+    especie: str
+    porte: str
     
-   
-    class Config:
-        from_attributes = True
 
-
-
-
-
-class Dono(DonoBase):
+class Pet(BaseModel):
     id: int
-    
+    nome: str
+    especie: str
+    porte: str
+
     class Config:
-        from_attributes = True
+        orm_mode = True
 
 
-class Pet(PetBase):
-    id: int
- 
-    class Config:
-        from_attributes = True
-
+class ServicoCreate(BaseModel):
+    nome: str
+    preco_base: float
 
 class Servico(BaseModel):
     id: int
     nome: str
     preco_base: float
-    
+
     class Config:
-        from_attributes = True
+        orm_mode = True
+
+
+class HistoricoDetalhe(BaseModel):
+    pet: str
+    servico: str
+    preco: float
+    data: datetime
+
+class HistoricoResponse(BaseModel):
+    tutor_id: int
+    total_gasto: float
+    servicos_detalhes: List[HistoricoDetalhe]
