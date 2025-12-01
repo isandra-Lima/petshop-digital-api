@@ -5,7 +5,7 @@ from datetime import datetime
 
 class TutorCreate(BaseModel):
     nome: str
-    telefone: str
+    telefone: int
 
 class Tutor(BaseModel):
     id: int

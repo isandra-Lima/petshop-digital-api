@@ -21,7 +21,7 @@ router = APIRouter()
 
 
 
-@router.post("/Tutor", response_model=Tutor, status_code=status.HTTP_201_CREATED, tags=["Tutores"])
+@router.post("/tutor", response_model=Tutor, status_code=status.HTTP_201_CREATED, tags=["Tutores"])
 def create_tutor(tutor: TutorCreate, db: Session = Depends(get_db)):
     db_tutor = TutorModel(**tutor.dict())
     db.add(db_tutor)
@@ -29,11 +29,22 @@ def create_tutor(tutor: TutorCreate, db: Session = Depends(get_db)):
     db.refresh(db_tutor)
     return db_tutor
 
+@router.delete("/delete_tutor", tags=["Tutores"])
+def delete_tutor(tutor_id: int, db: Session = Depends(get_db)):
+    tutor = db.query(TutorModel).filter(TutorModel.id == tutor_id).first()
+    if not tutor:
+        raise HTTPException(status_code=404, detail="Tutor não encontrado.")
+    if tutor.pets:
+        raise HTTPException( status_code=400,detail="Não é possível excluir um tutor que possui pets cadastrados.")
 
-@router.post("/Pets", response_model=Pet, status_code=status.HTTP_201_CREATED, tags=["Pets"])
+    db.delete(tutor)
+    db.commit()
+    return {"mensagem": "Tutor deletado com sucesso."}
+
+
+@router.post("pets", response_model=Pet, status_code=status.HTTP_201_CREATED, tags=["Pets"])
 def create_pet(tutor_id: int,pet: PetCreate = Body(...),db: Session = Depends(get_db)):
     tutor = db.query(TutorModel).filter(TutorModel.id == tutor_id).first()
-
     if not tutor:
         raise HTTPException(status_code=404, detail="Tutor não encontrado.")
 
@@ -54,10 +65,21 @@ def create_pet(tutor_id: int,pet: PetCreate = Body(...),db: Session = Depends(ge
 def list_pets(db: Session = Depends(get_db)):
     return db.query(PetModel).all()
 
+@router.delete("/delete_pets", tags=["Pets"])
+def delete_pet(pet_id: int, db: Session = Depends(get_db)):
+    pet = db.query(PetModel).filter(PetModel.id == pet_id).first()
+    if not pet:
+        raise HTTPException(status_code=404, detail="Pet não encontrado.")
 
-@router.get("/servicos/precos", tags=["Serviços"])
+    db.delete(pet)
+    db.commit()
+
+    return {"mensagem": "Pet deletado com sucesso."}
+
+
+@router.get("/preco_servico", tags=["Serviços"])
 def tabela_precos():
-    # espécies e portes disponíveis
+    
     especies = ["cachorro", "gato", "passaro"]
     portes = ["pequeno", "medio", "grande"]
 
@@ -99,7 +121,7 @@ def create_service(servico: ServicoCreate, db: Session = Depends(get_db)):
 
     return db_servico
 
-@router.post("/Aplicar_servico", tags=["Serviços"]) 
+@router.post("/aplicar_servico", tags=["Serviços"]) 
 def aplicar_servico(
     pet_nome: str = Body(...),
     servico_nome: str = Body(...),
