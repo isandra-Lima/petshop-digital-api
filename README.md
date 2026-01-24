@@ -40,7 +40,7 @@ Este projeto foi feito como atividade acadêmica para aplicar:
 
 ---
 
-## ▶ Como rodar o projeto
+## Como rodar o projeto
 ```bash
 pip install fastapi uvicorn sqlalchemy
 uvicorn main:app --reload
